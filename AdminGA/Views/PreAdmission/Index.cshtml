@@ -1,0 +1,255 @@
+﻿@{
+    Layout = "~/Views/Shared/_Layout.cshtml";
+    var classes = ViewBag.Classes as List<AdminGA.Entity.Student.GA_STDCLASS>;
+}
+
+<div class="page-header">
+    <div class="row">
+        <div class="col-sm-12">
+            <div class="page-sub-header">
+                <h3 class="page-title">Pre Admission</h3>
+                <ul class="breadcrumb">
+                    <li class="breadcrumb-item"><a href="students.html">Student</a></li>
+                    <li class="breadcrumb-item active">Pre Admission</li>
+                </ul>
+            </div>
+        </div>
+    </div>
+</div>
+
+<div class="row">
+    <div class="col-sm-12">
+        <div class="card card-table comman-shadow">
+            <div class="card-body">
+
+                <div class="page-header">
+                    <div class="row align-items-center">
+                        <div class="col">
+                            <h3 class="page-title">Students</h3>
+                        </div>
+                        <div class="col-auto text-end float-end ms-auto download-grp">
+                            <a href="/Student/DownloadAllRecords" class="btn btn-outline-primary me-2"><i class="fas fa-download"></i> Download</a>
+                            <a href="/PreAdmission/Create" class="btn btn-primary"><i class="fas fa-plus"></i></a>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="table-responsive">
+                    <table id="preAdmissionsTable" class="table border-0 star-student table-hover table-center mb-0 datatable table-striped">
+                        <thead class="student-thread">
+                            <tr>
+                                <th>Name</th>
+                                <th>Unique Code</th>
+                                <th>Class</th>
+                                <th>Medium</th>
+                                <th>Fees</th>
+                                <th>Payment Status</th>
+                                <th>Mobile Number</th>
+                                <th>Date</th>
+                                <th class="text-end">Action</th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            @foreach (var preAdmission in ViewBag.PreAdmissions)
+                            {
+                                <tr>
+                                    <td>@preAdmission.STD_FNAME @preAdmission.STD_LNAME</td>
+                                    <td>@preAdmission.STD_UNIQUECODE</td>
+                                    <td>@preAdmission.STD_CLASS</td>
+                                    <td>@preAdmission.STD_MEDIUM</td>
+                                    <td>&#8377; @preAdmission.STD_AFEES</td>
+                                    <td>
+                                        <div>
+                                            @if (preAdmission.STD_STSID == 10)
+                                            {
+                                                <span class="badge bg-warning text-dark" style="font-size: larger;">Pending</span>
+                                            }
+                                            else if (preAdmission.STD_STSID == 20)
+                                            {
+                                                <span class="badge bg-success" style="font-size: larger;">Paid</span>
+                                            }
+                                            else if (preAdmission.STD_STSID == 30)
+                                            {
+                                                <span class="badge bg-danger" style="font-size: larger;">Fail</span>
+                                            }
+                                            else
+                                            {
+                                                <span class="badge bg-secondary" style="font-size: larger;">Unknown</span>
+                                            }
+                                        </div>
+                                    </td>
+                                    <td>@preAdmission.STD_MOBILENO</td>
+                                    <td>@preAdmission.STD_ENTRYDATE.ToString("dd-MMM-yy")</td>
+                                    <td class="text-end">
+                                        <div class="actions">
+
+                                            <button class="btn btn-success btn-sm" onclick="takeAdmission('@preAdmission.STD_UNIQUECODE')">Take Admission</button>
+
+                                        </div>
+                                    </td>
+                                </tr>
+                            }
+                        </tbody>
+                    </table>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+<script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
+
+<script>
+    $(document).ready(function () {
+        if ($.fn.DataTable.isDataTable('#preAdmissionsTable')) {
+            $('#preAdmissionsTable').DataTable().destroy();
+        }
+
+        var table = $('#preAdmissionsTable').DataTable({
+            "paging": true,
+            "pageLength": 50,
+            "ordering": true,
+            "order": [[7, 'desc']],
+            "dom": 'Blfrtip',
+            "buttons": [
+                'colvis',
+                'csv',
+                'excel'
+            ],
+            "lengthMenu": [
+                [50, 100, 200, -1],
+                ['50', '100', '200', 'All']
+            ],
+            "searching": true,
+            "select": {
+                "style": 'multi'
+            },
+            "responsive": true,
+            "columnDefs": [
+                {
+                    "targets": '_all',
+                    "className": 'dt-center'
+                }
+            ],
+            "initComplete": function () {
+            },
+            "language": {
+                "search": "Search:",
+                "lengthMenu": "Show _MENU_ entries",
+                "info": "Showing _START_ to _END_ of _TOTAL_ entries",
+                "infoEmpty": "Showing 0 to 0 of 0 entries",
+                "infoFiltered": "(filtered from _MAX_ total entries)",
+                "paginate": {
+                    "first": "First",
+                    "last": "Last",
+                    "next": "Next",
+                    "previous": "Previous"
+                }
+            }
+        });
+
+        $("#searchButton").click(function () {
+            // Collect search criteria from inputs
+            var studentCode = $("#studentCode").val();
+            var studentName = $("#studentName").val();
+            var phone = $("#phone").val();
+            var selectedClass = $("#selectedClass").val();
+            var feesStatus = $("#feesStatus").val();
+
+            
+        });
+
+        
+
+        $("#resetButton").click(function () {
+            // Reset input fields
+            $("#studentCode, #studentName, #phone, #selectedClass, #feesStatus").val('');
+
+            // Reload the page
+            location.reload();
+        });
+
+    });
+
+    function takeAction(uniqueCode) {
+        // Perform AJAX request to check the status
+        debugger
+        $.ajax({
+            url: '/PreAdmission/GetRecordUniqueSeries',
+            type: 'GET',
+            data: { uniqueCode: uniqueCode },
+            success: function (result) {
+                if (result.stsId === 10) {
+                    // If status is 10, show SweetAlert2 for admission fees not paid
+                    showAdmissionFeesNotPaidAlert(result.studentData);
+                } else if (result.stsId === 20) {
+                    // If status is 20, proceed with the admission
+                    confirmAdmission(uniqueCode);
+                } else {
+                    // Handle other cases as needed
+                    console.log('Unknown admission status.');
+                }
+            },
+            error: function () {
+                console.log('Error occurred during status check.');
+            }
+        });
+    }
+
+    // Updated function to show simplified SweetAlert2 for pending admission fees
+    function showAdmissionFeesNotPaidAlert(studentData) {
+        Swal.fire({
+            title: 'Admission Fees Not Paid',
+            html: `Name: ${studentData.name}<br>
+                       Fees: &#8377; ${studentData.fees}<br>
+                       Payment Status: Pending<br>
+                       <input type="checkbox" id="givenByCashCheckbox"> Given by Cash`,
+            icon: 'warning',
+            showCancelButton: true,
+            confirmButtonText: 'Confirm Admission',
+            cancelButtonText: 'Cancel',
+            reverseButtons: true
+        }).then((result) => {
+            if (result.isConfirmed) {
+                // Check if the "Given by Cash" checkbox is checked
+                var givenByCash = $('#givenByCashCheckbox').prop('checked');
+
+                if (!givenByCash) {
+                    // If "Given by Cash" is not checked, show another alert indicating fees are required
+                    Swal.fire({
+                        title: 'Fees Required',
+                        text: 'Please make sure to provide the Admission fees.',
+                        icon: 'error'
+                    });
+                } else {
+                    // If "Given by Cash" is checked, proceed with the admission
+                    console.log('Admission confirmed.');
+                    // Call your confirmAdmission function or any other logic here
+                }
+            } else {
+                // Handle cancellation logic if needed
+                console.log('Admission cancelled.');
+            }
+        });
+    }
+
+
+    function takeAdmission(uniqueCode) {
+        $.ajax({
+            url: '/PreAdmission/PreAdmissionDetails',
+            type: 'GET',
+            data: { UniqueSeries: uniqueCode },
+            success: function (response) {
+                // Optionally handle success response
+                console.log(response);
+            },
+            error: function (error) {
+                // Optionally handle error
+                console.error(error);
+            }
+        });
+    }
+
+
+
+</script>

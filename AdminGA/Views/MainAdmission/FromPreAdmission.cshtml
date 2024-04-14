@@ -1,0 +1,106 @@
+﻿@model AdminGA.Models.Student.MainAdmissionViewModel
+
+@{
+    Layout = "~/Views/Shared/_Layout.cshtml";
+    var classes = ViewBag.Classes as List<AdminGA.Entity.Student.GA_STDCLASS>;
+}
+
+<div class="page-header">
+    <div class="row align-items-center">
+        <div class="col-sm-12">
+            <div class="page-sub-header">
+                <h3 class="page-title">Edit Pre Admission</h3>
+                <ul class="breadcrumb">
+                    <li class="breadcrumb-item"><a href="students.html">Student</a></li>
+                    <li class="breadcrumb-item active">Edit Pre Admission</li>
+                </ul>
+            </div>
+        </div>
+    </div>
+</div>
+
+<div class="row">
+    <div class="col-sm-12">
+        <div class="card comman-shadow">
+            <div class="card-body">
+                <form asp-action="Edit" asp-controller="Student" method="post">
+                    <div class="row">
+                        <div class="col-12">
+                            <h5 class="form-title student-info">Student Information <span><a href="javascript:;"><i class="feather-more-vertical"></i></a></span></h5>
+                        </div>
+                        <div class="col-12 col-sm-4">
+                            <div class="form-group local-forms">
+                                <label>First Name <span class="login-danger">*</span></label>
+                                <input class="form-control" type="text" asp-for="FirstName" value="@Model.FirstName" placeholder="Enter First Name">
+                            </div>
+                        </div>
+                        <div class="col-12 col-sm-4">
+                            <div class="form-group local-forms">
+                                <label>Middle Name <span class="login-danger">*</span></label>
+                                <input class="form-control" asp-for="MiddleName" value="@Model.MiddleName" type="text" placeholder="Enter Middle Name">
+                            </div>
+                        </div>
+                        <div class="col-12 col-sm-4">
+                            <div class="form-group local-forms">
+                                <label>Last Name <span class="login-danger">*</span></label>
+                                <input class="form-control" asp-for="LastName" value="@Model.LastName" type="text" placeholder="Enter Last Name">
+                            </div>
+                        </div>
+                        @* <div class="col-12 col-sm-4">
+                            <div class="form-group local-forms">
+                                <label>Class <span class="login-danger">*</span></label>
+                                <select asp-for="ClassID" class="form-control select">
+                                    <option value="@Model.ClassID" selected>@Model.Class</option>
+                                    @foreach (var item in classes)
+                                    {
+                                        <option value="@item.STD_CLID">@item.STD_CLNAME</option>
+                                    }
+                                </select>
+                            </div>
+                        </div> *@
+
+                       @*  <div class="col-12 col-sm-4">
+                            <div class="form-group local-forms">
+                                <label>Medium <span class="login-danger">*</span></label>
+                                <select asp-for="MediumID" class="form-control select">
+                                    <option value="@Model.MediumID" selected>@Model.Medium</option>
+                                    @foreach (var medium in ViewBag.Mediums)
+                                    {
+                                        <option value="@medium.MED_MID">@medium.MED_MEDIUM</option>
+                                    }
+                                </select>
+                            </div>
+                        </div> *@
+                        <div class="col-12 col-sm-4">
+                            <div class="form-group local-forms">
+                                <label>Mobile Number <span class="login-danger">*</span></label>
+                                <div class="input-group">
+                                    <span class="input-group-text">+91</span>
+                                    <input class="form-control" asp-for="MobileNumber" value="@Model.MobileNumber" type="text" placeholder="Enter Mobile Number">
+                                </div>
+                            </div>
+                        </div>
+                        <div class="col-12 col-sm-4">
+                            <div class="form-group local-forms">
+                                <label>Fees* <span class="login-danger">*</span></label>
+                                <div class="input-group">
+                                    <span class="input-group-text">&#8377;</span> <!-- Rupees symbol -->
+                                    <input class="form-control" asp-for="Fees" value="@Model.Fees" type="text" readonly>
+                                </div>
+                            </div>
+                        </div>
+
+                        <div class="col-12">
+                            <div class="student-submit">
+                                <button type="submit" class="btn btn-primary">Submit</button>
+                            </div>
+                        </div>
+                    </div>
+                </form>
+            </div>
+        </div>
+    </div>
+</div>
+
+<script src="~/assets/js/jquery-3.6.0.min.js"></script>
+<!-- Include SweetAlert2 JS -->

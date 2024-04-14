@@ -1,0 +1,166 @@
+﻿@model AdminGA.Models.Student.PreadmissionModel
+
+@{
+    Layout = "~/Views/Shared/_Layout.cshtml";
+    var classes = ViewBag.Classes as List<AdminGA.Entity.Student.GA_STDCLASS>;
+}
+
+<div class="page-header">
+    <div class="row align-items-center">
+        <div class="col-sm-12">
+            <div class="page-sub-header">
+                <h3 class="page-title">Pre Admission</h3>
+                <ul class="breadcrumb">
+                    <li class="breadcrumb-item"><a href="students.html">Student</a></li>
+                    <li class="breadcrumb-item active">Pre Admission</li>
+                </ul>
+            </div>
+        </div>
+    </div>
+</div>
+
+<div class="row">
+    <div class="col-sm-12">
+        <div class="card comman-shadow">
+            <div class="card-body">
+                <form asp-action="Create" asp-controller="PreAdmission" method="post">
+                    <div class="row">
+                        <div class="col-12">
+                            <h5 class="form-title student-info">Student Information <span><a href="javascript:;"><i class="feather-more-vertical"></i></a></span></h5>
+                        </div>
+                        <div class="col-12 col-sm-4">
+                            <div class="form-group local-forms">
+                                <label>First Name <span class="login-danger">*</span></label>
+                                <input class="form-control" type="text" asp-for="FirstName" placeholder="Enter First Name">
+                            </div>
+                        </div>
+                        <div class="col-12 col-sm-4">
+                            <div class="form-group local-forms">
+                                <label>Middle Name <span class="login-danger">*</span></label>
+                                <input class="form-control" asp-for="MiddleName" type="text" placeholder="Enter First Name">
+                            </div>
+                        </div>
+                        <div class="col-12 col-sm-4">
+                            <div class="form-group local-forms">
+                                <label>Last Name <span class="login-danger">*</span></label>
+                                <input class="form-control" asp-for="LastName" type="text" placeholder="Enter First Name">
+                            </div>
+                        </div>
+                        <div class="col-12 col-sm-4">
+                            <div class="form-group local-forms">
+                                <label>Class <span class="login-danger">*</span></label>
+                                <select asp-for="ClassID" class="form-control select">
+                                    <option selected>Select Class</option>
+                                    @foreach (var item in classes)
+                                    {
+                                        <option value="@item.STD_CLID">@item.STD_CLNAME</option>
+                                    }
+                                </select>
+                            </div>
+                        </div>
+
+                        <div class="col-12 col-sm-4">
+                            <div class="form-group local-forms">
+                                <label>Medium <span class="login-danger">*</span></label>
+                                <select asp-for="MediumID" class="form-control select">
+                                    <option selected>Select Medium</option>
+                                    @foreach (var medium in ViewBag.Mediums)
+                                    {
+                                        <option value="@medium.MED_MID">@medium.MED_MEDIUM</option>
+                                    }
+                                </select>
+                            </div>
+                        </div>
+                        <div class="col-12 col-sm-4">
+                            <div class="form-group local-forms">
+                                <label>Mobile Number <span class="login-danger">*</span></label>
+                                <div class="input-group">
+
+                                    <span class="input-group-text">+91</span>
+
+                                    <input class="form-control" asp-for="MobileNumber" type="text" placeholder="Enter Mobile Number">
+                                </div>
+                            </div>
+                        </div>
+                        <div class="col-12 col-sm-4">
+                            <div class="form-group local-forms">
+                                <label>Fees* <span class="login-danger">*</span></label>
+
+                                <div class="input-group">
+                                    <span class="input-group-text">&#8377;</span> <!-- Rupees symbol -->
+
+                                    <input class="form-control" asp-for="Fees" type="text" value="100" readonly>
+
+                                </div>
+                            </div>
+                        </div>
+
+                        <div class="col-12">
+                            <div class="student-submit">
+                                <button type="submit" class="btn btn-primary">Submit</button>
+                            </div>
+                        </div>
+                    </div>
+                </form>
+            </div>
+        </div>
+    </div>
+</div>
+
+<script src="~/assets/js/jquery-3.6.0.min.js"></script>
+<!-- Include SweetAlert2 JS -->
+<script src="https://cdn.jsdelivr.net/npm/sweetalert2@10"></script>
+<script>
+    $(document).ready(function () {
+        // Submit form using Ajax
+        $("form").submit(function (e) {
+            e.preventDefault(); // Prevent form submission
+
+            // Perform Ajax submission
+            $.ajax({
+                url: $(this).attr("action"),
+                type: $(this).attr("method"),
+                data: $(this).serialize(),
+                success: function (response) {
+                    if (response.isValid) {
+                        Swal.fire({
+                            icon: 'success',
+                            title: 'Success',
+                            text: 'Pre-admission successfully. Unique code: ' + response.uniqueCode,
+                        }).then(function () {
+                            // Refresh the page and redirect after clicking 'OK' in the SweetAlert2 modal
+                            window.location.href = '/PreAdmission/Index';
+                        });
+                    } else {
+                        if (response.validationErrors && response.validationErrors.length > 0) {
+                            let errorList = '<ul>';
+                            response.validationErrors.forEach(error => {
+                                errorList += `<li>${error}</li>`;
+                            });
+                            errorList += '</ul>';
+
+                            Swal.fire({
+                                icon: 'error',
+                                title: 'Validation Failed',
+                                html: errorList,
+                            });
+                        } else {
+                            Swal.fire({
+                                icon: 'error',
+                                title: 'Failed',
+                                text: 'Failed to process admission. Please try again.',
+                            });
+                        }
+                    }
+                },
+                error: function () {
+                    Swal.fire({
+                        icon: 'error',
+                        title: 'Error',
+                        text: 'An unexpected error occurred.',
+                    });
+                }
+            });
+        });
+    });
+</script>

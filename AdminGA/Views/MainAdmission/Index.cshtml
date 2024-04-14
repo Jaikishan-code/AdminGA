@@ -1,0 +1,173 @@
+﻿@model AdminGA.Models.Student.MainAdmissionViewModel
+
+@{
+    Layout = "~/Views/Shared/_Layout.cshtml";
+    var classes = ViewBag.Classes as List<AdminGA.Entity.Student.GA_STDCLASS>;
+}
+
+<style>
+    /* Custom CSS for improved styling */
+    .mt-4 {
+        margin-top: 0.2rem !important;
+    }
+</style>
+
+<div class="page-header">
+    <div class="row align-items-center">
+        <div class="col-sm-12">
+            <div class="page-sub-header">
+                <h3 class="page-title">Main Admission</h3>
+                <ul class="breadcrumb">
+                    <li class="breadcrumb-item"><a href="students.html">Student</a></li>
+                    <li class="breadcrumb-item active">Main Admission</li>
+                </ul>
+            </div>
+        </div>
+    </div>
+</div>
+
+<div class="row">
+    <div class="col-sm-12">
+        <div class="card comman-shadow">
+            <div class="card-body">
+                <form asp-action="Edit" asp-controller="Student" method="post">
+                    <div class="row">
+                        <div class="col-12">
+                            <h5 class="form-title student-info">Unique Series</h5>
+                        </div>
+                        <div class="col-12 col-sm-6">
+                            <div class="form-group local-forms">
+                                <label>Enter Unique Series <span class="login-danger">*</span></label>
+                                <input id="uniqueSeriesInput" class="form-control" type="text" placeholder="Enter Unique Series">
+                            </div>
+                        </div>
+                        <div class="col-12 col-sm-6">
+                            <div class="form-group local-forms">
+                                <button id="fetchDataBtn" type="button" class="btn btn-primary mt-4">Fetch Data</button>
+                            </div>
+                        </div>
+                    </div>
+
+                    <!-- Rest of the form fields -->
+                    <div class="row">
+                        <div class="col-12">
+                            <h5 class="form-title student-info">PreAdmission Information</h5>
+                        </div>
+                        <div class="col-12 col-sm-4">
+                            <div class="form-group local-forms">
+                                <label>First Name <span class="login-danger">*</span></label>
+                                <input class="form-control" type="text" asp-for="FirstName" value="@Model.FirstName" placeholder="Enter First Name" readonly>
+                            </div>
+                        </div>
+                        <div class="col-12 col-sm-4">
+                            <div class="form-group local-forms">
+                                <label>Middle Name <span class="login-danger">*</span></label>
+                                <input class="form-control" asp-for="MiddleName" value="@Model.MiddleName" type="text" placeholder="Enter Middle Name" readonly>
+                            </div>
+                        </div>
+                        <div class="col-12 col-sm-4">
+                            <div class="form-group local-forms">
+                                <label>Last Name <span class="login-danger">*</span></label>
+                                <input class="form-control" asp-for="LastName" value="@Model.LastName" type="text" placeholder="Enter Last Name" readonly>
+                            </div>
+                        </div>
+                        <div class="col-12 col-sm-4">
+                            <div class="form-group local-forms">
+                                <label>Class <span class="login-danger">*</span></label>
+                                <select asp-for="ClassID" class="form-control select" readonly>
+                                    <option selected>Select Class</option>
+                                    @foreach (var item in classes)
+                                    {
+                                        <option value="@item.STD_CLID">@item.STD_CLNAME</option>
+                                    }
+                                </select>
+                            </div>
+                        </div>
+
+                        <div class="col-12 col-sm-4">
+                            <div class="form-group local-forms">
+                                <label>Medium <span class="login-danger">*</span></label>
+                                <select asp-for="MediumID" class="form-control select" readonly>
+                                    <option selected>Select Medium</option>
+                                    @foreach (var medium in ViewBag.Mediums)
+                                    {
+                                        <option value="@medium.MED_MID">@medium.MED_MEDIUM</option>
+                                    }
+                                </select>
+                            </div>
+                        </div>
+                        <div class="col-12 col-sm-4">
+                            <div class="form-group local-forms">
+                                <label>Mobile Number <span class="login-danger">*</span></label>
+                                <div class="input-group">
+                                    <span class="input-group-text">+91</span>
+                                    <input class="form-control" asp-for="MobileNumber" value="@Model.MobileNumber" type="text" placeholder="Enter Mobile Number" readonly>
+                                </div>
+                            </div>
+                        </div>
+                        <div class="col-12 col-sm-4">
+                            <div class="form-group local-forms">
+                                <label>Fees* <span class="login-danger">*</span></label>
+                                <div class="input-group">
+                                    <span class="input-group-text">&#8377;</span> <!-- Rupees symbol -->
+                                    <input class="form-control" asp-for="Fees" value="@Model.Fees" type="text" readonly>
+                                </div>
+                            </div>
+                        </div>
+
+                    </div>
+
+                    <div class="row">
+                        <div class="col-12">
+                            <div class="student-submit">
+                                <button type="submit" class="btn btn-primary">Submit</button>
+                            </div>
+                        </div>
+                    </div>
+                </form>
+            </div>
+        </div>
+    </div>
+</div>
+
+<!-- Include jQuery -->
+<script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
+
+<script>
+    $(document).ready(function () {
+        $('#fetchDataBtn').on('click', function () {
+            var uniqueSeries = $('#uniqueSeriesInput').val();
+            if (!uniqueSeries) {
+                // Show SweetAlert popup if Unique Series is empty
+                Swal.fire({
+                    icon: 'error',
+                    title: 'Oops...',
+                    text: 'Please enter a Unique Series!',
+                });
+                return; // Exit the function if Unique Series is empty
+            }
+
+            // Proceed with AJAX request if Unique Series is not empty
+            $.ajax({
+                url: '/MainAdmission/PreAdmissionDetails', // Replace this with your controller method URL
+                method: 'GET',
+                data: { uniqueSeries: uniqueSeries },
+                success: function (data) {
+                    // Assuming data is an object with fields to populate
+                    // Populate form fields with the received data
+                    $('#FirstName').val(data.firstName);
+                    $('#MiddleName').val(data.middleName);
+                    $('#LastName').val(data.lastName);
+                    $('#ClassID').val(data.classID); // Assuming this is the ID of the class
+                    $('#MediumID').val(data.mediumID); // Assuming this is the ID of the medium
+                    $('#MobileNumber').val(data.mobileNumber);
+                    $('#Fees').val(data.fees);
+                },
+                error: function (xhr, status, error) {
+                    // Handle errors
+                }
+            });
+        });
+    });
+</script>
+
