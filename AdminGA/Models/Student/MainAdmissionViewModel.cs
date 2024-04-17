@@ -15,5 +15,10 @@
         public string? Class { get; set; }
 
         public string? Medium { get; set; }
+
+        public decimal? YearlyFees { get; set; }
+
+        public decimal? MonthlyFees { get; set; }
+
     }
 }

@@ -6,8 +6,12 @@
     <UserSecretsId>aspnet-AspnetIdentityRoleBasedTutorial-1ce73b51-3636-49bb-9c50-6856bd8121d5</UserSecretsId>
   </PropertyGroup>
   <ItemGroup>
-    <Folder Include="Template\Email\" />
-    <Folder Include="Template\Pdf\" />
+    <Compile Remove="Template\**" />
+    <Content Remove="Template\**" />
+    <EmbeddedResource Remove="Template\**" />
+    <None Remove="Template\**" />
+  </ItemGroup>
+  <ItemGroup>
     <Folder Include="wwwroot\Uploads\" />
   </ItemGroup>
   <ItemGroup>

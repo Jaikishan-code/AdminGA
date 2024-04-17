@@ -15,8 +15,14 @@ namespace AdminGA.Controllers
         {
             _dbContext = dbContext;
         }
+        public ActionResult Index()
+        {
+            var (classes, mediums, preAdmissions) = GetData();
+            SetViewData(classes, mediums, preAdmissions);
+            return View();
+        }
         // GET: MainAdmissionController
-        public ActionResult Index(MainAdmissionViewModel model)
+        public ActionResult FromPreAdmission(MainAdmissionViewModel model)
         {
             
             return View(model);
@@ -92,7 +98,7 @@ namespace AdminGA.Controllers
             ViewBag.MainAdmissionViewModel = model;
 
             // Return JSON with the populated view model
-            return View("Index", model);
+            return View("FromPreAdmission", model);
         }
 
 

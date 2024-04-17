@@ -15,12 +15,10 @@ namespace AdminGA.Controllers
     {
         private readonly ApplicationDbContext _dbContext;
 
-        // Constructor to inject the DbContext
         public PreAdmissionController(ApplicationDbContext dbContext)
         {
             _dbContext = dbContext;
         }
-        // GET: PreAdmissionController
         public ActionResult Index()
         {
             var (classes, mediums, preAdmissions) = GetData();

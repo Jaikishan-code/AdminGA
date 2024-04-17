@@ -80,13 +80,15 @@
                                     </td>
                                     <td>@preAdmission.STD_MOBILENO</td>
                                     <td>@preAdmission.STD_ENTRYDATE.ToString("dd-MMM-yy")</td>
+                                   
                                     <td class="text-end">
                                         <div class="actions">
-
-                                            <button class="btn btn-success btn-sm" onclick="takeAdmission('@preAdmission.STD_UNIQUECODE')">Take Admission</button>
-
+                                            <button type="button" class="btn btn-success btn-sm" onclick="location.href='@Url.Action("PreAdmissionDetails", "MainAdmission", new { uniqueSeries = @preAdmission.STD_UNIQUECODE })'">Take Admission</button>
                                         </div>
                                     </td>
+
+
+
                                 </tr>
                             }
                         </tbody>
