@@ -81,6 +81,20 @@ namespace AdminGA.Controllers
                 return Json(new { error = "Data not found" }); // Return JSON with error message
             }
 
+            // Retrieve the fees based on STD_MEDID and STD_CLID
+            var feeData = _dbContext.GA_FEESMASTER
+                .FirstOrDefault(f => f.GAFEE_MEDMID == data.STD_MEDID && f.GAFEE_STDCLID == data.STD_CLID);
+
+            if (feeData == null)
+            {
+                // Handle case where fee data is not found
+                return Json(new { error = "Fee data not found" }); // Return JSON with error message
+            }
+
+            // Calculate yearly and monthly fees
+            decimal yearlyFees = feeData.GAFEE_FEES;
+            decimal monthlyFees = yearlyFees / 10;
+
             // Populate a view model with the retrieved data
             var model = new MainAdmissionViewModel
             {
@@ -90,16 +104,77 @@ namespace AdminGA.Controllers
                 ClassID = data.STD_CLID,
                 MediumID = data.STD_MEDID,
                 MobileNumber = data.STD_MOBILENO,
-                Fees = (int)data.STD_AFEES
+                Fees = (int)data.STD_AFEES,
+                YearlyFees = yearlyFees,
+                MonthlyFees = monthlyFees
             };
 
             var (classes, mediums, preAdmissions) = GetData();
             SetViewData(classes, mediums, preAdmissions);
             ViewBag.MainAdmissionViewModel = model;
 
-            // Return JSON with the populated view model
+            // Return view with the populated view model
             return View("FromPreAdmission", model);
         }
+
+        public IActionResult CheckClassLevel(Guid classId)
+        {
+            var className = _dbContext.GA_STDCLASS
+                                .Where(x => x.STD_CLID == classId)
+                                .Select(b => b.STD_CLNAME.Trim().ToLower())
+                                .FirstOrDefault();
+
+            bool is11Or12 = className == "11th std" || className == "12th std";
+
+            // Fetch all mediums
+            var mediums = _dbContext.GA_STDMEDIUM.ToList();
+
+            if (!is11Or12)
+            {
+                // If class is not 11th or 12th, remove Commerce, Science, SP, and Math from mediums
+
+                mediums = mediums.Where(m => m.MED_MEDIUM.ToLower() != "commerce" &&
+                                              m.MED_MEDIUM.ToLower() != "science" &&
+                                              m.MED_MEDIUM.ToLower() != "sp" &&
+                                              m.MED_MEDIUM.ToLower() != "math").ToList();
+            }
+
+            ViewBag.Mediums = mediums;
+
+            return Json(new { is11Or12 = is11Or12 });
+        }
+
+
+        //[HttpGet]
+        //public ActionResult PreAdmissionDetails(string uniqueSeries)
+        //{
+        //    // Retrieve data based on the uniqueSeries
+        //    var data = _dbContext.GA_STDPREADMISSION.FirstOrDefault(x => x.STD_UNIQUECODE == uniqueSeries);
+        //    if (data == null)
+        //    {
+        //        // Handle case where data is not found
+        //        return Json(new { error = "Data not found" }); // Return JSON with error message
+        //    }
+
+        //    // Populate a view model with the retrieved data
+        //    var model = new MainAdmissionViewModel
+        //    {
+        //        FirstName = data.STD_FNAME,
+        //        MiddleName = data.STD_FANAME,
+        //        LastName = data.STD_LNAME,
+        //        ClassID = data.STD_CLID,
+        //        MediumID = data.STD_MEDID,
+        //        MobileNumber = data.STD_MOBILENO,
+        //        Fees = (int)data.STD_AFEES
+        //    };
+
+        //    var (classes, mediums, preAdmissions) = GetData();
+        //    SetViewData(classes, mediums, preAdmissions);
+        //    ViewBag.MainAdmissionViewModel = model;
+
+        //    // Return JSON with the populated view model
+        //    return View("FromPreAdmission", model);
+        //}
 
 
 
@@ -120,5 +195,8 @@ namespace AdminGA.Controllers
             ViewBag.Mediums = mediums;
             ViewBag.PreAdmissions = preAdmissions;
         }
+
+        
+
     }
 }

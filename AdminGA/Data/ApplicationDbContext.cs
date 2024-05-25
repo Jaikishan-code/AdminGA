@@ -15,5 +15,8 @@ namespace AdminGA.Data
         public DbSet<GA_STDCLASS> GA_STDCLASS { get; set; }
         public DbSet<GA_STDMEDIUM> GA_STDMEDIUM { get; set; }
         public DbSet<GA_STDUNQSERIES> GA_STDUNQSERIES { get; set; }
+
+        public DbSet<GA_FEESMASTER> GA_FEESMASTER { get; set; }
+
     }
 }

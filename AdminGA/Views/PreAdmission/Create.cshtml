@@ -62,12 +62,8 @@
                         <div class="col-12 col-sm-4">
                             <div class="form-group local-forms">
                                 <label>Medium <span class="login-danger">*</span></label>
-                                <select asp-for="MediumID" class="form-control select">
-                                    <option selected>Select Medium</option>
-                                    @foreach (var medium in ViewBag.Mediums)
-                                    {
-                                        <option value="@medium.MED_MID">@medium.MED_MEDIUM</option>
-                                    }
+                                <select asp-for="MediumID" class="form-control select" id="mediumDropdown">
+                                    <option value="">Select Medium</option>
                                 </select>
                             </div>
                         </div>
@@ -162,5 +158,36 @@
                 }
             });
         });
+    });
+</script>
+<script>
+    $(document).ready(function () {
+        
+        // Populate Medium dropdown based on selected Class
+        $("#ClassID").change(function () {
+            debugger
+            var classId = $(this).val();
+            populateMediumDropdown(classId);
+        });
+
+        function populateMediumDropdown(classId) {
+            debugger
+            $.ajax({
+                url: '@Url.Action("GetMediumsByClass", "PreAdmission")',
+                type: 'GET',
+                data: { classId: classId },
+                success: function (data) {
+                    var mediumDropdown = $("#mediumDropdown");
+                    mediumDropdown.empty();
+                    mediumDropdown.append($("<option></option>").val("").text("Select Medium"));
+                    $.each(data, function (i, medium) {
+                        mediumDropdown.append($("<option></option>").val(medium.meD_MID).text(medium.meD_MEDIUM));
+                    });
+                },
+                error: function () {
+                    console.log("Error fetching mediums.");
+                }
+            });
+        }
     });
 </script>

@@ -143,6 +143,38 @@ namespace AdminGA.Controllers
 
             return query;
         }
+
+        public JsonResult GetMediumsByClass(Guid classId)
+        {
+            var className = _dbContext.GA_STDCLASS
+                                .Where(x => x.STD_CLID == classId)
+                                .Select(b => b.STD_CLNAME.Trim().ToLower())
+                                .FirstOrDefault();
+
+            bool is11Or12 = className == "11th std" || className == "12th std";
+
+            // Fetch all mediums
+            var mediums = _dbContext.GA_STDMEDIUM.ToList();
+
+            if (!is11Or12)
+            {
+
+                mediums = mediums.Where(m => m.MED_MEDIUM.ToLower() != "commerce" &&
+                                              m.MED_MEDIUM.ToLower() != "science" &&
+                                              m.MED_MEDIUM.ToLower() != "sp" &&
+                                              m.MED_MEDIUM.ToLower() != "math").ToList();
+            }
+            else
+            {
+                mediums = mediums.Where(m => m.MED_MEDIUM.ToLower() != "hindi" &&
+                                              m.MED_MEDIUM.ToLower() != "english" &&
+                                              m.MED_MEDIUM.ToLower().Trim() != "semi english").ToList();
+            }
+
+
+
+            return Json(mediums);
+        }
         private (List<GA_STDCLASS>, List<GA_STDMEDIUM>, List<GA_STDPREADMISSION>) GetData()
         {
             var classes = _dbContext.GA_STDCLASS.ToList();

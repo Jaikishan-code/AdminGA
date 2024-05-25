@@ -31,8 +31,6 @@
         <div class="card comman-shadow">
             <div class="card-body">
                 <form asp-action="Edit" asp-controller="Student" method="post">
-
-
                     <!-- Rest of the form fields -->
                     <div class="row">
                         <div class="col-12">
@@ -59,7 +57,7 @@
                         <div class="col-12 col-sm-4">
                             <div class="form-group local-forms">
                                 <label>Class <span class="login-danger">*</span></label>
-                                <select asp-for="ClassID" class="form-control select">
+                                <select asp-for="ClassID" class="form-control select" id="ClassID">
                                     <option selected>Select Class</option>
                                     @foreach (var item in classes)
                                     {
@@ -68,11 +66,10 @@
                                 </select>
                             </div>
                         </div>
-
                         <div class="col-12 col-sm-4">
                             <div class="form-group local-forms">
                                 <label>Medium <span class="login-danger">*</span></label>
-                                <select asp-for="MediumID" class="form-control select">
+                                <select asp-for="MediumID" class="form-control select" id="mediumDropdown">
                                     <option selected>Select Medium</option>
                                     @foreach (var medium in ViewBag.Mediums)
                                     {
@@ -99,11 +96,87 @@
                                 </div>
                             </div>
                         </div>
-
                     </div>
 
+                    <!-- New Section for Other Details -->
                     <div class="row mt-4">
-                        <!-- Add margin top -->
+                        <div class="col-12">
+                            <h5 class="form-title student-info">Other Details</h5>
+                        </div>
+                        <div class="col-12 col-sm-4">
+                            <div class="form-group local-forms">
+                                <label>Mother Name <span class="login-danger">*</span></label>
+                                <input class="form-control" asp-for="MotherName" value="@Model.MotherName" type="text" placeholder="Enter Mother Name">
+                            </div>
+                        </div>
+                        <div class="col-12 col-sm-4">
+                            <div class="form-group local-forms">
+                                <label>Mother Phone Number <span class="login-danger">*</span></label>
+                                <div class="input-group">
+                                    <span class="input-group-text">+91</span>
+                                    <input class="form-control" asp-for="MotherPhoneNumber" value="@Model.MotherPhoneNumber" type="text" placeholder="Enter Mother Phone Number">
+                                </div>
+                            </div>
+                        </div>
+                        <div class="col-12 col-sm-4">
+                            <div class="form-group local-forms">
+                                <label>Father Phone Number <span class="login-danger">*</span></label>
+                                <div class="input-group">
+                                    <span class="input-group-text">+91</span>
+                                    <input class="form-control" asp-for="FatherPhoneNumber" value="@Model.FatherPhoneNumber" type="text" placeholder="Enter Father Phone Number">
+                                </div>
+                            </div>
+                        </div>
+                        <div class="col-12 col-sm-4">
+                            <div class="form-group local-forms">
+                                <label>State <span class="login-danger">*</span></label>
+                                <input class="form-control" asp-for="State" value="@Model.State" type="text" placeholder="Enter State">
+                            </div>
+                        </div>
+                        <div class="col-12 col-sm-4">
+                            <div class="form-group local-forms">
+                                <label>City <span class="login-danger">*</span></label>
+                                <input class="form-control" asp-for="City" value="@Model.City" type="text" placeholder="Enter City">
+                            </div>
+                        </div>
+                        @* <div class="col-12 col-sm-4">
+                            <div class="form-group local-forms">
+                                <label>Batch <span class="login-danger">*</span></label>
+                                <select asp-for="Batch" class="form-control select" id="batchDropdown">
+                                    <option selected>Select Batch</option>
+                                    @{
+                                        for (int i = DateTime.Now.Year - 1; i <= DateTime.Now.Year; i++)
+                                        {
+                                            <option value="@($"{i}-{i + 1}")">@($"{i}-{i + 1}")</option>
+                                        }
+                                    }
+                                </select>
+                            </div>
+                        </div> *@
+
+
+                        <div class="col-12 col-sm-4">
+                            <div class="form-group local-forms">
+                                <label>Address 1 <span class="login-danger">*</span></label>
+                                <input class="form-control" asp-for="Address1" value="@Model.Address1" type="text" placeholder="Enter Address 1">
+                            </div>
+                        </div>
+                        <div class="col-12 col-sm-4">
+                            <div class="form-group local-forms">
+                                <label>Address 2 <span class="login-danger">*</span></label>
+                                <input class="form-control" asp-for="Address2" value="@Model.Address2" type="text" placeholder="Enter Address 2">
+                            </div>
+                        </div>
+                        <div class="col-12 col-sm-4">
+                            <div class="form-group local-forms">
+                                <label>Address 3 <span class="login-danger">*</span></label>
+                                <input class="form-control" asp-for="Address3" value="@Model.Address3" type="text" placeholder="Enter Address 3">
+                            </div>
+                        </div>
+                    </div>
+
+                    <!-- Fees Structure Section -->
+                    <div class="row mt-4">
                         <div class="col-12">
                             <h5 class="form-title student-info">Fees Structure</h5>
                         </div>
@@ -112,7 +185,16 @@
                                 <label>Yearly Fees* <span class="login-danger">*</span></label>
                                 <div class="input-group">
                                     <span class="input-group-text">&#8377;</span> <!-- Rupees symbol -->
-                                    <input class="form-control" asp-for="YearlyFees" value="@Model.YearlyFees" type="text">
+                                    <input class="form-control" asp-for="YearlyFees" value="@Model.YearlyFees" type="text" id="yearlyFees">
+                                </div>
+                            </div>
+                        </div>
+                        <div class="col-12 col-sm-4">
+                            <div class="form-group local-forms">
+                                <label>Discount on Yearly Fees* <span class="login-danger">*</span></label>
+                                <div class="input-group">
+                                    <span class="input-group-text">&#8377;</span> <!-- Rupees symbol -->
+                                    <input class="form-control" asp-for="Discount" value="@Model.Discount" type="text" id="discount">
                                 </div>
                             </div>
                         </div>
@@ -121,12 +203,13 @@
                                 <label>Monthly Fees* <span class="login-danger">*</span></label>
                                 <div class="input-group">
                                     <span class="input-group-text">&#8377;</span> <!-- Rupees symbol -->
-                                    <input class="form-control" asp-for="MonthlyFees" value="@Model.MonthlyFees" type="text">
+                                    <input class="form-control" asp-for="MonthlyFees" value="@Model.MonthlyFees" type="text" id="monthlyFees">
                                 </div>
                             </div>
                         </div>
                     </div>
-                    <div class="row">
+
+                    <div class="row mt-4">
                         <div class="col-12">
                             <div class="student-submit">
                                 <button type="submit" class="btn btn-primary">Submit</button>
@@ -141,4 +224,47 @@
 
 <!-- Include jQuery -->
 <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
+<script>
+    $(document).ready(function () {
+        function calculateMonthlyFees() {
+            var yearlyFees = parseFloat($('#yearlyFees').val());
+            var discount = parseFloat($('#discount').val()) || 0; // Default to 0 if discount is empty or invalid
+            if (!isNaN(yearlyFees)) {
+                var discountedYearlyFees = yearlyFees - discount;
+                var monthlyFees = discountedYearlyFees / 10;
+                $('#monthlyFees').val(monthlyFees.toFixed(2));
+            } else {
+                $('#monthlyFees').val('');
+            }
+        }
 
+        // Attach the calculateMonthlyFees function to the input event of yearlyFees and discount fields
+        $('#yearlyFees').on('input', calculateMonthlyFees);
+        $('#discount').on('input', calculateMonthlyFees);
+
+        // Populate Medium dropdown based on selected Class
+        $("#ClassID").change(function () {
+            var classId = $(this).val();
+            populateMediumDropdown(classId);
+        });
+
+        function populateMediumDropdown(classId) {
+            $.ajax({
+                url: '@Url.Action("GetMediumsByClass", "PreAdmission")',
+                type: 'GET',
+                data: { classId: classId },
+                success: function (data) {
+                    var mediumDropdown = $("#mediumDropdown");
+                    mediumDropdown.empty();
+                    mediumDropdown.append($("<option></option>").val("").text("Select Medium"));
+                    $.each(data, function (i, medium) {
+                        mediumDropdown.append($("<option></option>").val(medium.meD_MID).text(medium.meD_MEDIUM));
+                    });
+                },
+                error: function () {
+                    console.log("Error fetching mediums.");
+                }
+            });
+        }
+    });
+</script>
